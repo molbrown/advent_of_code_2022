@@ -5,7 +5,7 @@ defmodule Mix.Tasks.D02.P2 do
 
   @shortdoc "Day 02 Part 2"
   def run(args) do
-    input = nil
+    input = get_input()
 
     if Enum.member?(args, "-b"),
       do: Benchee.run(%{part_2: fn -> input |> part2() end}),
@@ -13,5 +13,14 @@ defmodule Mix.Tasks.D02.P2 do
         input
         |> part2()
         |> IO.inspect(label: "Part 2 Results")
+  end
+
+  defp get_input do
+    "../../data/day_02.txt"
+    |> Path.expand(__DIR__)
+    |> File.stream!()
+    |> Stream.map(&String.trim_trailing/1)
+    |> Stream.map(&String.replace(&1, " ", ""))
+    |> Enum.to_list()
   end
 end

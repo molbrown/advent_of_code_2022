@@ -10,7 +10,15 @@ defmodule AdventOfCode.Day03 do
     |> Enum.sum()
   end
 
-  def part2(_args) do
+  def part2(input) do
+    input
+    |> Enum.map(&String.graphemes/1)
+    |> Enum.chunk_every(3)
+    |> Enum.map(fn [a, b, c] -> Enum.filter(a, fn i -> Enum.member?(b, i) && Enum.member?(c, i) end) end)
+    |> Enum.map(&Enum.dedup()/1)
+    |> List.flatten()
+    |> Enum.map(fn i -> priority(i) end)
+    |> Enum.sum()
   end
 
   def priority(item) do

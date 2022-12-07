@@ -12,19 +12,22 @@ defmodule AdventOfCode.Day05 do
           ]
 
   def part1(input) do
-    Enum.reduce(input, @stacks, fn x, acc -> move_crates(acc, x) end)
+    Enum.reduce(input, @stacks, fn x, acc -> move_single_crates(acc, x) end)
     |> Enum.map(fn x -> List.last(x) end)
     |> Enum.join()
   end
 
-  def part2(_args) do
+  def part2(input) do
+    Enum.reduce(input, @stacks, fn x, acc -> move_many_crates(acc, x) end)
+    |> Enum.map(fn x -> List.last(x) end)
+    |> Enum.join()
   end
 
-  def move_crates(stacks, [0, _from_stack, _to_stack]) do
+  def move_single_crates(stacks, [0, _from_stack, _to_stack]) do
     stacks
   end
 
-  def move_crates(stacks, [times, from_stack, to_stack]) do
+  def move_single_crates(stacks, [times, from_stack, to_stack]) do
     origin = Enum.at(stacks, from_stack - 1)
     destination = Enum.at(stacks, to_stack - 1)
     new_row_a = Enum.drop(origin, -1)
@@ -32,6 +35,16 @@ defmodule AdventOfCode.Day05 do
 
     List.replace_at(stacks, from_stack - 1, new_row_a)
     |> List.replace_at(to_stack - 1, new_row_b)
-    |> move_crates([times - 1, from_stack, to_stack])
+    |> move_single_crates([times - 1, from_stack, to_stack])
+  end
+
+  def move_many_crates(stacks, [quant, from_stack, to_stack]) do
+    origin = Enum.at(stacks, from_stack - 1)
+    destination = Enum.at(stacks, to_stack - 1)
+    new_row_a = Enum.drop(origin, -quant)
+    new_row_b = Enum.concat(destination, Enum.take(origin, -quant))
+
+    List.replace_at(stacks, from_stack - 1, new_row_a)
+    |> List.replace_at(to_stack - 1, new_row_b)
   end
 end
